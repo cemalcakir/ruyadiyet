@@ -2,7 +2,7 @@ import sys
 from PyQt5 import QtWidgets
 from _ruya import Ui_MainWindow
 from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QIntValidator
 
 class myApp(QtWidgets.QMainWindow):
     def __init__(self):
@@ -14,6 +14,18 @@ class myApp(QtWidgets.QMainWindow):
         self.setWindowTitle("Rüya Diyet")
 
         self.ui.btnHesapla.clicked.connect(self.calculateRequiredCal)
+
+        self.onlyInt = QIntValidator()
+        self.ui.degerBoy.setValidator(self.onlyInt)
+        self.ui.degerKilo.setValidator(self.onlyInt)
+        self.ui.degerYas.setValidator(self.onlyInt)
+        self.ui.degerPAL.setValidator(self.onlyInt)
+        self.ui.degisimSut.setValidator(self.onlyInt)
+        self.ui.degisimEt.setValidator(self.onlyInt)
+        self.ui.degisimEYG.setValidator(self.onlyInt)
+        self.ui.degisimSebze.setValidator(self.onlyInt)
+        self.ui.degisimMeyve.setValidator(self.onlyInt)
+        self.ui.degisimYag.setValidator(self.onlyInt)
 
         self.ui.degisimSut.textChanged.connect(self.calculateTotalCalorie)
         self.ui.degisimEt.textChanged.connect(self.calculateTotalCalorie)
