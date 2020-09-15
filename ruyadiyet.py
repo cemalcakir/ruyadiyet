@@ -13,8 +13,6 @@ class myApp(QtWidgets.QMainWindow):
         self.setWindowIcon(QIcon("icon.jpg"))
         self.setWindowTitle("Rüya Diyet")
 
-        self.ui.btnHesapla.clicked.connect(self.calculateRequiredCal)
-
         self.onlyInt = QIntValidator()
         self.ui.degerBoy.setValidator(self.onlyInt)
         self.ui.degerKilo.setValidator(self.onlyInt)
@@ -26,6 +24,8 @@ class myApp(QtWidgets.QMainWindow):
         self.ui.degisimSebze.setValidator(self.onlyInt)
         self.ui.degisimMeyve.setValidator(self.onlyInt)
         self.ui.degisimYag.setValidator(self.onlyInt)
+        
+        self.ui.btnHesapla.clicked.connect(self.calculateRequiredCal)
 
         self.ui.degisimSut.textChanged.connect(self.calculateTotalCalorie)
         self.ui.degisimEt.textChanged.connect(self.calculateTotalCalorie)
