@@ -3,7 +3,6 @@ from PyQt5 import QtWidgets
 from _ruya import Ui_MainWindow
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon, QPixmap
-import numpy as np
 
 class myApp(QtWidgets.QMainWindow):
     def __init__(self):
