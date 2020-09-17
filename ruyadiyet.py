@@ -4,6 +4,7 @@ from _ruya import Ui_MainWindow
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon, QPixmap, QIntValidator
 
+#myApp anlamsız bir isim. anlamlı bir isim daha iyi olur
 class myApp(QtWidgets.QMainWindow):
     def __init__(self):
         super(myApp, self).__init__()
@@ -13,6 +14,7 @@ class myApp(QtWidgets.QMainWindow):
         self.setWindowIcon(QIcon("icon.jpg"))
         self.setWindowTitle("Rüya Diyet")
 
+        # bu set'ler de bir metot içine alınabilir. 
         self.onlyInt = QIntValidator()
         self.ui.degerBoy.setValidator(self.onlyInt)
         self.ui.degerKilo.setValidator(self.onlyInt)
@@ -40,11 +42,21 @@ class myApp(QtWidgets.QMainWindow):
         yas = self.ui.degerYas.text()
         PAL = self.ui.degerPAL.text()
 
+        #Kadın ve erkek için aşağıdaki iki büyük blok aynı pattern'de ilerliyor.
+        #Bu bloğun içeriğini bir metoda alıp metoda kadın veya erkek parametresi geçirerek kod duplikasyonundan kurtulabilirsin.
         try:
             if self.ui.radioButtonErkek.isChecked():
                 requiredCalorieHBMale = (66.5 + (13.75 * float(kilo)) + (5.003 * float(boy)) - (6.755 * float(yas))) * float(PAL)
                 self.ui.returnHarrisPAL.setText(f"Harris Benedict: {round(requiredCalorieHBMale, 2)}")
 
+                #Buradali 66.5 , 13.75 gibi sayılar bir anlam ifade etmiyor. Bunları kodun başında değişkenlere atayıp, kodun içinde 
+                # değişken isimlerini kullanmalısın ki, kodun anlaşılır olsun. Örneğin 66.5 neyse onun ismini verip aşağıda değişken olarak kullanmalısın.,
+                
+                # Yine bu büyük blokların içinde yaşa göre çok if / else var. Yaşı ve cinsiyeti alıp requiredCalory dönen bir metot yazabilrisin.
+                
+                #15 yaşından küçükeri 0 dönüyorsun bu koda göre. Eğer hesaplamıyorsan bunu input girildiğinde belirtmelisin. 
+                #Buradan döndüğün 0 başka yerlerde anlamsız sonuçlara yol açabilir. Burası basit bir yer, 0 anlaşılır kullanıcı tarafından ama prensip olarak
+                # handle edemeyeceğin input'u anlamlı bir mesajla dışarı dönmek, o inputu alıp kendi belirlediğin bir default değer üretmekten iyidir.
                 bki = float(kilo) / ((float(boy) / 100)**2)
                 self.ui.returnBKI.setText(f"BKI: {round(bki, 2)}")
 
@@ -63,6 +75,7 @@ class myApp(QtWidgets.QMainWindow):
                 requiredCalorieWHOMale = 24*float(kilo)
                 self.ui.returnWHO.setText(f"WHO: {round(requiredCalorieWHOMale, 2)}")
 
+             #Bu bloğun için komple kalkacak zaten metota alınca, kadın erkek ikisi aynı iş, duplikasyon var
             elif self.ui.radioButtonKadin.isChecked():
                 requiredCalorieHBFemale = (655 + (9.563 * float(kilo)) + (1.850 * float(boy)) - (4.676 * float(yas))) * float(PAL)
                 self.ui.returnHarrisPAL.setText(f"Harris Benedict: {round(requiredCalorieHBFemale, 2)}")
@@ -96,6 +109,20 @@ class myApp(QtWidgets.QMainWindow):
             msg.setText("Lütfen boy, kilo, yaş ve fiziksel aktivite değerlerini sayısal olarak giriniz.")
             msg.setIcon(QMessageBox.Warning)
             msg.exec_()
+    
+    # Üstteki else ve expect'te benzer işler yapılıyor. Hatalı durumu, mesela eksik input'u if / else bloklarına dahil etmek kodu gitgide karmaşıklştırır
+    # Onun yerine benim tavsiyem : Bir metot : IsInputValid() Bu metot yapılması gereken tüm kontrolleri yapar, ve gerekli uyarıyı döner. 
+    # Bu metot senin lojik işlerin başlamadan önce çağırılır, eğer input geçerli ise o zaman asıl yapacağı işe devam eder kod.
+    # Dolayısıyla input validation ile business logic birbirinden ayrı yerlerde olur. Yarın yeni bir input geldi diyelim, onu nerede kontrol edeceğin belli olur: 
+    # IsInputValid'in içinde. 
+    
+    # Bir diğer konu : Kontrol etmesi elimizde olan şeyler için try / except yazmak doğru değil. 
+    # Genel olarak try/catch veya py'da try/except blokları gerçekten beklenmedik şeylerin olacağı durumlarda kullanılır. 
+    # Örneğin kodun içinde dış bir servise gidiyorsundur, servis cevap vermeyebilir, bağlantı kopabilir, beklemediğin, parse edemediğin bir cevap dönebilir.
+    # Bu durumda kodun patlamaması için exception'ı yakalarsın ve loglarsın, anlamlı bir hata dönersin vs. 
+    # Ancak burada gelebilecek input'u ve tüm durumları biliyoruz. Dolayısıyla try except kullanmana gerek yok. 
+    # Ha böyle yaparsan kodun güvenli olur gibi bir yanılgı olabilir ancak try except maliyetlidir ve koda gereksiz kompleksite sokar. Gerekemedikçe kullanılmamalı
+    # Hatta bunun adı da var. Her yeri kapsayan bütük try catch bloklarına pokemon exception handling denir :) "gotta catch em all" dan dolayı 
     
     def calculateTotalCalorie(self):    
         et = self.ui.degisimEt.text()        
